@@ -18,5 +18,5 @@
     <icon src="icon.png" gap:role="default" />
 
     <preference name="permissions" value="none"/>
-    <preference name="phonegap-version" value="2.2.0" />
+    <preference name="phonegap-version" value="2.1.0" />
 </widget>
