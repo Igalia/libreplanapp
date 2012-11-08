@@ -23,12 +23,47 @@
 
             <div data-role="header">
                 <h1>LibrePlan App</h1>
+                <a href="#options" class="ui-btn-right"
+                    data-icon="gear" data-iconpos="notext">Options</a>
             </div>
 
             <div data-role="content">
                 <ul data-role="listview" id="tasks-list"></ul>
             </div>
 
+        </div>
+
+        <div data-role="page" id="options">
+            <div data-role="header">
+                <a data-rel="back" data-role="button"
+                    data-icon="back" data-iconpos="notext">Back</a>
+                <h1>Options</h1>
+            </div>
+            <div data-role="content">
+                <div data-role="fieldcontain">
+                    <label for="url">URL:</label>
+                    <input id="url" type="text"></input>
+                </div>
+                <div data-role="fieldcontain">
+                    <label for="username">Username:</label>
+                    <input id="username" type="text"></input>
+                </div>
+                <div data-role="fieldcontain">
+                    <label for="password">Password:</label>
+                    <input id="password" type="password"></input>
+                </div>
+                <fieldset class="ui-grid-a">
+                    <div class="ui-block-a">
+                        <a href="#home" data-role="button"
+                            data-icon="delete">Cancel</a>
+                    </div>
+                    <div class="ui-block-b">
+                        <a href="#home" data-role="button"
+                            data-icon="check" data-theme="b"
+                            onClick="saveOptions();">Save</a>
+                    </div>
+                </fieldset>
+            </div>
         </div>
 
     </body>

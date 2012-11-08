@@ -19,43 +19,59 @@
 // Boun user web services path
 var PATH = 'ws/rest/bounduser/';
 
-// Convert in params
-var url = 'http://unstable.libreplan.org/libreplan-unstable/';
-var username = 'r1';
-var password = 'r1';
-
+// Global vars
+var url;
+var username;
+var baseAuth;
 var tasks;
 
-document.addEventListener("deviceready", onDeviceReady, false);
+document.addEventListener('deviceready', onDeviceReady, false);
 
 function onDeviceReady() {
-	getTasksList();
+    reloadStoredOptions();
+    setOptionsInputs();
+    refreshTasksList();
+}
+
+function isOnline() {
+    var networkState = navigator.network.connection.type;
+    return (networkState != Connection.NONE);
 }
 
 function makeBaseAuth(user, password) {
     var token = user + ':' + password;
     var hash = btoa(token);
-    return "Basic " + hash;
-  }
+    return 'Basic ' + hash;
+}
 
-function getTasksList() {
-    myurl = url + PATH + 'mytasks';
+function offLineCallback() {
+	refreshTasksList();
+}
+
+function refreshTasksList() {
+    if (!isOnline()) {
+        navigator.notification.alert(
+                'Sorry but to be on-line in order to use LibrePlan App',
+                offLineCallback,
+                'Off-line',
+                'Ok'
+            );
+    }
+
+    serviceUrl = url + PATH + 'mytasks';
 
     $.ajax({
-        type: "GET",
-        url: myurl,
+        type: 'GET',
+        url: serviceUrl,
         beforeSend: function (xhr) {
-            xhr.setRequestHeader('Authorization', makeBaseAuth(username, password));
+            xhr.setRequestHeader('Authorization', baseAuth);
         }
-    }).done(function (data) {
-        dump(data.childNodes);
-        dump(data.getElementsByTagName('task'));
-
-        tasksList = data.firstChild;
+    }).done(function(data) {
+        var tasksList = data.firstChild;
         tasks = new Array();
 
         for (i = 0; i < tasksList.childNodes.length; i++) {
-            taskData = tasksList.childNodes[i];
+            var taskData = tasksList.childNodes[i];
             var task = {
                     name: taskData.getAttribute('name'),
                     code: taskData.getAttribute('code'),
@@ -70,16 +86,14 @@ function getTasksList() {
         }
 
         fillTaskLists();
+    }).fail(function() {
+        navigator.notification.alert(
+            'Problems connecting to LibrePlan server',
+            goToOptions,
+            'Error',
+            'Ok'
+        );
     });
-}
-
-function dump(obj) {
-    var out = '';
-    for (var i in obj) {
-        out += i + ": " + obj[i] + "\n";
-    }
-
-    console.log(out);
 }
 
 function fillTaskLists() {
@@ -109,5 +123,35 @@ function toPercentage(progress) {
     if (!progress) {
         progress = 0;
     }
-    return parseInt(progress) + " %";
+    return parseInt(progress) + ' %';
+}
+
+function saveOptions() {
+    var url = $('#url').val();
+    window.localStorage.setItem('url', url);
+
+    var username = $('#username').val();
+    window.localStorage.setItem('username', username);
+
+    var password = $('#password').val();
+    var baseAuth = makeBaseAuth(username, password);
+    window.localStorage.setItem('baseAuth', baseAuth);
+
+    reloadStoredOptions();
+    refreshTasksList();
+}
+
+function reloadStoredOptions() {
+    url = window.localStorage.getItem('url');
+    username = window.localStorage.getItem('username');
+    baseAuth = window.localStorage.getItem('baseAuth');
+}
+
+function setOptionsInputs() {
+    $('#url').val(url);
+    $('#username').val(username);
+}
+
+function goToOptions() {
+    $.mobile.changePage('#options');
 }
