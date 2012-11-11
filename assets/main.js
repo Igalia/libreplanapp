@@ -64,11 +64,12 @@ function offLineCallback() {
 function refreshTasksList() {
     if (!isOnline()) {
         navigator.notification.alert(
-                'Sorry but to be on-line in order to use LibrePlan App',
+                'Sorry but you have to be on-line in order to use LibrePlan App',
                 offLineCallback,
                 'Off-line',
                 'Ok'
             );
+        return;
     }
 
     serviceUrl = url + PATH + 'mytasks';
