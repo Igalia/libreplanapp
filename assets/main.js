@@ -28,8 +28,8 @@ var tasks;
 document.addEventListener('deviceready', onDeviceReady, false);
 
 function onDeviceReady() {
-    reloadStoredOptions();
-    setOptionsInputs();
+    reloadStoredConfiguration();
+    setConfigurationInputs();
     refreshTasksList();
 }
 
@@ -89,7 +89,7 @@ function refreshTasksList() {
     }).fail(function() {
         navigator.notification.alert(
             'Problems connecting to LibrePlan server',
-            goToOptions,
+            goToConfiguration,
             'Error',
             'Ok'
         );
@@ -126,7 +126,7 @@ function toPercentage(progress) {
     return parseInt(progress) + ' %';
 }
 
-function saveOptions() {
+function saveConfiguration() {
     var url = $('#url').val();
     window.localStorage.setItem('url', url);
 
@@ -137,21 +137,21 @@ function saveOptions() {
     var baseAuth = makeBaseAuth(username, password);
     window.localStorage.setItem('baseAuth', baseAuth);
 
-    reloadStoredOptions();
+    reloadStoredConfiguration();
     refreshTasksList();
 }
 
-function reloadStoredOptions() {
+function reloadStoredConfiguration() {
     url = window.localStorage.getItem('url');
     username = window.localStorage.getItem('username');
     baseAuth = window.localStorage.getItem('baseAuth');
 }
 
-function setOptionsInputs() {
+function setConfigurationInputs() {
     $('#url').val(url);
     $('#username').val(username);
 }
 
-function goToOptions() {
-    $.mobile.changePage('#options');
+function goToConfiguration() {
+    $.mobile.changePage('#configuration');
 }
