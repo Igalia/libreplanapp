@@ -25,12 +25,25 @@ var username;
 var baseAuth;
 var tasks;
 
+var finishedTasks = false;
+
 document.addEventListener('deviceready', onDeviceReady, false);
 
 function onDeviceReady() {
     reloadStoredConfiguration();
     setConfigurationInputs();
+    updateFinishedTasksButtonsVisibility();
     refreshTasksList();
+}
+
+function updateFinishedTasksButtonsVisibility() {
+    if (finishedTasks) {
+        $("#show-finished").hide();
+        $("#hide-finished").show();
+    } else {
+        $("#show-finished").show();
+        $("#hide-finished").hide();
+    }
 }
 
 function isOnline() {
@@ -101,9 +114,21 @@ function fillTaskLists() {
     list.html('');
 
     for ( var i = 0; i < tasks.length; i++) {
+        if (!finishedTasks) {
+            if (isTaskFinished(tasks[i].progressValue)) {
+                continue;
+            }
+        }
         list.append(createLiTask(i));
     }
     list.listview('destroy').listview();
+}
+
+function isTaskFinished(progress) {
+    if (!progress) {
+        return false;
+    }
+    return parseInt(progress) == "100";
 }
 
 function createLiTask(index) {
@@ -154,4 +179,16 @@ function setConfigurationInputs() {
 
 function goToConfiguration() {
     $.mobile.changePage('#configuration');
+}
+
+function showFinished() {
+    finishedTasks = true;
+    updateFinishedTasksButtonsVisibility();
+    fillTaskLists();
+}
+
+function hideFinished() {
+    finishedTasks = false;
+    updateFinishedTasksButtonsVisibility();
+    fillTaskLists();
 }

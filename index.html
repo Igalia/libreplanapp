@@ -31,6 +31,20 @@
                 <ul data-role="listview" id="tasks-list"></ul>
             </div>
 
+
+            <div data-role="footer" class="ui-bar-a">
+                <div class="ui-grid-solo">
+                    <div class="ui-block-a">
+                        <a id="show-finished" data-role="button"
+                            data-icon="plus" data-theme="b"
+                            onClick="showFinished();">Show finished tasks</a>
+                        <a id="hide-finished" data-role="button"
+                            data-icon="minus" data-theme="b"
+                            onClick="hideFinished();">Hide finished tasks</a>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <div data-role="page" id="configuration">
@@ -39,6 +53,7 @@
                     data-icon="back" data-iconpos="notext">Back</a>
                 <h1>Configuration</h1>
             </div>
+
             <div data-role="content">
                 <div data-role="fieldcontain">
                     <label for="url">URL:</label>
@@ -52,7 +67,10 @@
                     <label for="password">Password:</label>
                     <input id="password" type="password"></input>
                 </div>
-                <fieldset class="ui-grid-a">
+            </div>
+
+            <div data-role="footer" class="ui-bar-a">
+                <div class="ui-grid-a">
                     <div class="ui-block-a">
                         <a href="#home" data-role="button"
                             data-icon="delete">Cancel</a>
@@ -62,7 +80,7 @@
                             data-icon="check" data-theme="b"
                             onClick="saveConfiguration();">Save</a>
                     </div>
-                </fieldset>
+                </div>
             </div>
         </div>
 
