@@ -24,6 +24,7 @@ var url;
 var username;
 var baseAuth;
 var projects;
+var timesheetsEntries;
 
 var finishedTasks = false;
 
@@ -181,12 +182,14 @@ function createLiProject(project) {
 }
 
 function createLiTask(task) {
-    var li = $('<li />');
-    $('<h3 />').append(task.name).appendTo(li);
-    $('<p />').append($('<strong />').append('Effort: ' + task.effort)).appendTo(li);
-    $('<p />').append('Dates: ' + task.startDate + ' - ' + task.endDate).appendTo(li);
-    $('<p class="ui-li-aside" />').append(toPercentage(task.progressValue)).appendTo(li);
+    var a = $('<a onClick="showTimesheets(\'' + task.code + '\', \'' + task.name + '\');" />');
+    $('<h3 />').append(task.name).appendTo(a);
+    $('<p />').append($('<strong />').append('Effort: ' + task.effort)).appendTo(a);
+    $('<p />').append('Dates: ' + task.startDate + ' - ' + task.endDate).appendTo(a);
+    $('<p class="ui-li-aside" />').append(toPercentage(task.progressValue)).appendTo(a);
 
+    var li = $('<li />');
+    li.append(a);
     return li;
 }
 
@@ -237,4 +240,55 @@ function hideFinished() {
     finishedTasks = false;
     updateFinishedTasksButtonsVisibility();
     fillTaskLists();
+}
+
+function showTimesheets(taskCode, taskName) {
+    $.mobile.changePage('#timesheets');
+
+    serviceUrl = url + PATH + 'timesheets/' + taskCode;
+
+    $.ajax({
+        type: 'GET',
+        url: serviceUrl,
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', baseAuth);
+        }
+    }).done(function(data) {
+        var entriesList = data.firstChild;
+
+        timesheetsEntries = new Array();
+
+        for (i = 0; i < entriesList.childNodes.length; i++) {
+            var entry = entriesList.childNodes[i];
+
+            var timesheetEntry = {
+                    date: entry.getAttribute('date'),
+                    effort: entry.getAttribute('effort'),
+            };
+
+            timesheetsEntries.push(timesheetEntry);
+        }
+
+        $('#timesheets-task').html(taskName);
+        fillTimesheetsList();
+    });
+}
+
+function fillTimesheetsList() {
+    var list = $('#timesheets-list');
+    list.html('');
+
+    for (var i = 0; i < timesheetsEntries.length; i++) {
+        var entry = timesheetsEntries[i];
+        list.append(createLiTimesheetEntry(entry));
+    }
+
+    list.listview('destroy').listview();
+}
+
+function createLiTimesheetEntry(entry) {
+    var li = $('<li />');
+    $('<h3 />').append(entry.date).appendTo(li);
+    $('<p />').append($('<strong />').append('Effort: ' + entry.effort)).appendTo(li);
+    return li;
 }
