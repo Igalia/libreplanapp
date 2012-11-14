@@ -23,7 +23,7 @@ var PATH = 'ws/rest/bounduser/';
 var url;
 var username;
 var baseAuth;
-var tasks;
+var projects;
 
 var finishedTasks = false;
 
@@ -82,21 +82,41 @@ function refreshTasksList() {
         }
     }).done(function(data) {
         var tasksList = data.firstChild;
-        tasks = new Array();
+
+        projects = new Array();
 
         for (i = 0; i < tasksList.childNodes.length; i++) {
             var taskData = tasksList.childNodes[i];
+
+            projectId = taskData.getAttribute('project-name');
+            var project = findProjectById(projectId);
+
+            if (!project) {
+                project = {
+                    name: taskData.getAttribute('project-name'),
+                    allTasksFinished: true,
+                    tasks: new Array(),
+                    unfinishedTasks: 0,
+                };
+                projects.push(project);
+            }
+
             var task = {
                     name: taskData.getAttribute('name'),
                     code: taskData.getAttribute('code'),
-                    projectName: taskData.getAttribute('project-name'),
                     startDate: taskData.getAttribute('start-date'),
                     endDate: taskData.getAttribute('end-date'),
                     effort: taskData.getAttribute('effort'),
                     progressValue: taskData.getAttribute('progress-value'),
                     progressDate: taskData.getAttribute('progress-date'),
             };
-            tasks[i] = task;
+
+            if (!isTaskFinished(task)) {
+                project.allTasksFinished = false;
+                project.unfinishedTasks++;
+            }
+
+            project.tasks.push(task);
         }
 
         fillTaskLists();
@@ -110,36 +130,61 @@ function refreshTasksList() {
     });
 }
 
+function findProjectById(projectId) {
+    for (var i = 0; i < projects.length; i++) {
+        if (projects[i].name == projectId) {
+            return projects[i];
+        }
+    }
+    return null;
+}
+
 function fillTaskLists() {
     var list = $('#tasks-list');
     list.html('');
 
-    for ( var i = 0; i < tasks.length; i++) {
-        if (!finishedTasks) {
-            if (isTaskFinished(tasks[i].progressValue)) {
-                continue;
-            }
+    for (var i = 0; i < projects.length; i++) {
+        var project = projects[i];
+        if (!finishedTasks && project.allTasksFinished) {
+            continue;
         }
-        list.append(createLiTask(i));
+
+        list.append(createLiProject(project));
+
+        for ( var i = 0; i < project.tasks.length; i++) {
+            var task = project.tasks[i];
+            if (!finishedTasks) {
+                if (isTaskFinished(task)) {
+                    continue;
+                }
+            }
+            list.append(createLiTask(task));
+        }
     }
+
     list.listview('destroy').listview();
 }
 
-function isTaskFinished(progress) {
+function isTaskFinished(task) {
+    var progress = task.progressValue;
     if (!progress) {
         return false;
     }
     return parseInt(progress) == "100";
 }
 
-function createLiTask(index) {
-    var task = tasks[index];
+function createLiProject(project) {
+    var li = $('<li data-role="list-divider" />');
+    var tasksNumber = finishedTasks ? project.tasks.length : project.unfinishedTasks;
+    li.html(project.name + ' <span class="ui-li-count">' + tasksNumber + '</span>');
+    return li;
+}
 
+function createLiTask(task) {
     var li = $('<li />');
     $('<h3 />').append(task.name).appendTo(li);
     $('<p />').append($('<strong />').append('Effort: ' + task.effort)).appendTo(li);
     $('<p />').append('Dates: ' + task.startDate + ' - ' + task.endDate).appendTo(li);
-    $('<p />').append('Project: ' + task.projectName).appendTo(li);
     $('<p class="ui-li-aside" />').append(toPercentage(task.progressValue)).appendTo(li);
 
     return li;
