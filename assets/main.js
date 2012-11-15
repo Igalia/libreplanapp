@@ -89,11 +89,12 @@ function refreshTasksList() {
         for (i = 0; i < tasksList.childNodes.length; i++) {
             var taskData = tasksList.childNodes[i];
 
-            projectId = taskData.getAttribute('project-name');
-            var project = findProjectById(projectId);
+            projectCode = taskData.getAttribute('project-code');
+            var project = findProjectByCode(projectCode);
 
             if (!project) {
                 project = {
+                    code: projectCode,
                     name: taskData.getAttribute('project-name'),
                     allTasksFinished: true,
                     tasks: new Array(),
@@ -131,9 +132,9 @@ function refreshTasksList() {
     });
 }
 
-function findProjectById(projectId) {
+function findProjectByCode(projectCode) {
     for (var i = 0; i < projects.length; i++) {
-        if (projects[i].name == projectId) {
+        if (projects[i].code == projectCode) {
             return projects[i];
         }
     }
@@ -152,8 +153,8 @@ function fillTaskLists() {
 
         list.append(createLiProject(project));
 
-        for ( var i = 0; i < project.tasks.length; i++) {
-            var task = project.tasks[i];
+        for (var j = 0; j < project.tasks.length; j++) {
+            var task = project.tasks[j];
             if (!finishedTasks) {
                 if (isTaskFinished(task)) {
                     continue;
