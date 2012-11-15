@@ -279,9 +279,13 @@ function fillTimesheetsList() {
     var list = $('#timesheets-list');
     list.html('');
 
-    for (var i = 0; i < timesheetsEntries.length; i++) {
-        var entry = timesheetsEntries[i];
-        list.append(createLiTimesheetEntry(entry));
+    if (timesheetsEntries.length == 0) {
+        list.append($('<li style="color:red;" />').append("No timesheets yet"));
+    } else {
+        for (var i = 0; i < timesheetsEntries.length; i++) {
+            var entry = timesheetsEntries[i];
+            list.append(createLiTimesheetEntry(entry));
+        }
     }
 
     list.listview('destroy').listview();
