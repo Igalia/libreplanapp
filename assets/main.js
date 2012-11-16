@@ -327,7 +327,14 @@ function addTimesheetEntry() {
             task: selectedTask,
     };
     timesheetsEntries.unshift(entry);
+
+    resetAddTimesheetPopup();
     refreshTimesheetsListAndShowSaveButton();
+}
+
+function resetAddTimesheetPopup() {
+    $('#date').val('');
+    $('#effort').val('');
 }
 
 function refreshTimesheetsListAndShowSaveButton() {
