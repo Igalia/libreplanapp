@@ -25,6 +25,7 @@ var username;
 var baseAuth;
 var projects;
 var timesheetsEntries;
+var selectedTask;
 
 var finishedTasks = false;
 
@@ -246,6 +247,8 @@ function hideFinished() {
 function showTimesheets(taskCode, taskName) {
     $.mobile.changePage('#timesheets');
 
+    selectedTask = taskCode;
+
     serviceUrl = url + PATH + 'timesheets/' + taskCode;
 
     $.ajax({
@@ -312,5 +315,15 @@ function createLiTimesheetEntry(entry) {
 
 function removeTimesheetEntry(index) {
     timesheetsEntries[index].effort = null;
+    fillTimesheetsList();
+}
+
+function addTimesheetEntry() {
+    var entry = {
+            date: $('#date').val(),
+            effort: $('#effort').val(),
+            task: selectedTask,
+    };
+    timesheetsEntries.unshift(entry);
     fillTimesheetsList();
 }

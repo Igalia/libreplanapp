@@ -92,6 +92,9 @@
                 <a data-rel="back" data-role="button"
                     data-icon="back" data-iconpos="notext">Back</a>
                 <h1 id="timesheets-task">Task</h1>
+                <a href="#popupAdd" data-rel="popup"
+                    data-position-to="window" data-role="button"
+                    data-inline="true" data-icon="plus" data-iconpos="notext">Add</a>
             </div>
 
             <div data-role="content">
@@ -99,6 +102,25 @@
                     data-split-icon="delete" data-split-theme="b"></ul>
                 <div id="timesheets-list-empty" style="color:red;display:none">
                     No timesheets yet
+                </div>
+
+                <div data-role="popup" id="popupAdd" data-theme="a" class="ui-corner-all">
+                    <a href="#" data-rel="back" data-role="button"
+                        data-icon="delete" data-iconpos="notext" data-theme="a"
+                        class="ui-btn-right">Close</a>
+                    <div style="padding:10px 20px;">
+                        <div data-role="fieldcontain">
+                            <label for="date">Date</label>
+                            <input type="text" id="date"></input>
+                        </div>
+                        <div data-role="fieldcontain">
+                            <label for="effort">Effort</label>
+                            <input type="text" id="effort"></input>
+                        </div>
+                        <a href="#timesheets" data-role="button"
+                            data-icon="plus" data-theme="b"
+                            onClick="addTimesheetEntry();">Add</a>
+                    </div>
                 </div>
             </div>
 
