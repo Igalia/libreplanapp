@@ -265,6 +265,7 @@ function showTimesheets(taskCode, taskName) {
             var timesheetEntry = {
                     date: entry.getAttribute('date'),
                     effort: entry.getAttribute('effort'),
+                    task: entry.getAttribute('task'),
             };
 
             timesheetsEntries.push(timesheetEntry);
@@ -280,11 +281,17 @@ function fillTimesheetsList() {
     list.html('');
 
     if (timesheetsEntries.length == 0) {
-        list.append($('<li style="color:red;" />').append("No timesheets yet"));
+        $('#timesheets-list-empty').show();
+        list.hide();
     } else {
+        $('#timesheets-list-empty').hide();
+        list.show();
+
         for (var i = 0; i < timesheetsEntries.length; i++) {
             var entry = timesheetsEntries[i];
-            list.append(createLiTimesheetEntry(entry));
+            if (entry.effort) {
+                list.append(createLiTimesheetEntry(entry));
+            }
         }
     }
 
@@ -293,7 +300,17 @@ function fillTimesheetsList() {
 
 function createLiTimesheetEntry(entry) {
     var li = $('<li />');
-    $('<h3 />').append(entry.date).appendTo(li);
-    $('<p />').append($('<strong />').append('Effort: ' + entry.effort)).appendTo(li);
+
+    $('<a />').append(entry.date).appendTo(li);
+    $('<span class="ui-li-count" />').append(entry.effort).appendTo(li);
+
+    var index = timesheetsEntries.indexOf(entry);
+    $('<a onClick="removeTimesheetEntry(\'' + index + '\');" />').append('Delete').appendTo(li);
+
     return li;
+}
+
+function removeTimesheetEntry(index) {
+    timesheetsEntries[index].effort = null;
+    fillTimesheetsList();
 }

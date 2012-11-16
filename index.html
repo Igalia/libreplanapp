@@ -41,7 +41,8 @@
                             onClick="showFinished();">Show finished tasks</a>
                         <a id="hide-finished" data-role="button"
                             data-icon="minus" data-theme="b"
-                            onClick="hideFinished();">Hide finished tasks</a>
+                            onClick="hideFinished();"
+                            style="display:none">Hide finished tasks</a>
                     </div>
                 </div>
             </div>
@@ -94,7 +95,11 @@
             </div>
 
             <div data-role="content">
-                <ul data-role="listview" id="timesheets-list"></ul>
+                <ul data-role="listview" id="timesheets-list"
+                    data-split-icon="delete" data-split-theme="b"></ul>
+                <div id="timesheets-list-empty" style="color:red;display:none">
+                    No timesheets yet
+                </div>
             </div>
 
         </div>
