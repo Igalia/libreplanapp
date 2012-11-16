@@ -283,6 +283,8 @@ function fillTimesheetsList() {
     var list = $('#timesheets-list');
     list.html('');
 
+    $('#saveTimesheetEntries').hide();
+
     if (timesheetsEntries.length == 0) {
         $('#timesheets-list-empty').show();
         list.hide();
@@ -292,7 +294,7 @@ function fillTimesheetsList() {
 
         for (var i = 0; i < timesheetsEntries.length; i++) {
             var entry = timesheetsEntries[i];
-            if (entry.effort) {
+            if (entry.effort != "0") {
                 list.append(createLiTimesheetEntry(entry));
             }
         }
@@ -314,8 +316,8 @@ function createLiTimesheetEntry(entry) {
 }
 
 function removeTimesheetEntry(index) {
-    timesheetsEntries[index].effort = null;
-    fillTimesheetsList();
+    timesheetsEntries[index].effort = "0";
+    refreshTimesheetsListAndShowSaveButton();
 }
 
 function addTimesheetEntry() {
@@ -325,5 +327,55 @@ function addTimesheetEntry() {
             task: selectedTask,
     };
     timesheetsEntries.unshift(entry);
+    refreshTimesheetsListAndShowSaveButton();
+}
+
+function refreshTimesheetsListAndShowSaveButton() {
     fillTimesheetsList();
+    $('#saveTimesheetEntries').show();
+}
+
+function generateTimesheetsEntriesXML() {
+    var root = $('<personal-timesheet-entry-list />');
+    for (var i = 0; i < timesheetsEntries.length; i++) {
+        var entry = timesheetsEntries[i];
+        $('<personal-timesheet-entry effort="' + entry.effort + '" date="' + entry.date + '" task="' + entry.task + '" />').appendTo(root);
+    }
+
+    var xml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        + '<personal-timesheet-entry-list xmlns="http://rest.ws.libreplan.org">'
+        + root.html()
+        + '</personal-timesheet-entry-list>';
+    return xml;
+}
+
+function saveTimesheetsEntries() {
+    var xml = generateTimesheetsEntriesXML();
+
+    serviceUrl = url + PATH + 'timesheets/';
+
+    $.ajax({
+        type: 'POST',
+        url: serviceUrl,
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', baseAuth);
+        },
+        data: xml,
+        contentType: 'text/xml',
+        dataType: 'text',
+    }).done(function(data) {
+        navigator.notification.alert(
+                'Changes saved into LibrePlan server',
+                null,
+                'Information',
+                'Ok'
+            );
+    }).fail(function() {
+        navigator.notification.alert(
+                'Problems sending timesheets data to LibrePlan server',
+                null,
+                'Error',
+                'Ok'
+            );
+    });
 }
