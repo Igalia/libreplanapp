@@ -74,6 +74,11 @@ function refreshTasksList() {
         return;
     }
 
+    $.mobile.loading('show', {
+        text: 'Loading tasks list',
+        textVisible: true,
+    });
+
     serviceUrl = url + PATH + 'mytasks';
 
     $.ajax({
@@ -123,7 +128,11 @@ function refreshTasksList() {
         }
 
         fillTaskLists();
+
+        $.mobile.loading('hide');
     }).fail(function() {
+        $.mobile.loading('hide');
+
         navigator.notification.alert(
             'Problems connecting to LibrePlan server',
             goToConfiguration,
@@ -247,6 +256,11 @@ function hideFinished() {
 function showTimesheets(taskCode, taskName) {
     $.mobile.changePage('#timesheets');
 
+    $.mobile.loading('show', {
+        text: 'Loading timesheets',
+        textVisible: true,
+    });
+
     selectedTask = taskCode;
 
     serviceUrl = url + PATH + 'timesheets/' + taskCode;
@@ -276,6 +290,17 @@ function showTimesheets(taskCode, taskName) {
 
         $('#timesheets-task').html(taskName);
         fillTimesheetsList();
+
+        $.mobile.loading('hide');
+    }).fail(function() {
+        $.mobile.loading('hide');
+
+        navigator.notification.alert(
+            'Problems loading timesheets for task "' + taskName + '"',
+            null,
+            'Error',
+            'Ok'
+        );
     });
 }
 
@@ -366,6 +391,11 @@ function generateTimesheetsEntriesXML() {
 }
 
 function saveTimesheetsEntries() {
+    $.mobile.loading('show', {
+        text: 'Saving timesheets',
+        textVisible: true,
+    });
+
     var xml = generateTimesheetsEntriesXML();
 
     serviceUrl = url + PATH + 'timesheets/';
@@ -380,6 +410,8 @@ function saveTimesheetsEntries() {
         contentType: 'text/xml',
         dataType: 'text',
     }).done(function(data) {
+        $.mobile.loading('hide');
+
         navigator.notification.alert(
                 'Changes saved into LibrePlan server',
                 null,
@@ -387,6 +419,8 @@ function saveTimesheetsEntries() {
                 'Ok'
             );
     }).fail(function() {
+        $.mobile.loading('hide');
+
         navigator.notification.alert(
                 'Problems sending timesheets data to LibrePlan server',
                 null,
