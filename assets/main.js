@@ -301,6 +301,29 @@ function fillTimesheetsList() {
     }
 
     list.listview('destroy').listview();
+
+    setupAddTimesheetEntryPopup();
+}
+
+function setupAddTimesheetEntryPopup() {
+    $('#date').scroller({
+        preset: 'date',
+        theme: 'jqm',
+        display: 'inline',
+        mode: 'clickpick',
+        dateFormat: 'yyyy-mm-dd',
+        dateOrder: 'yyyy-mm-dd'
+    });
+
+    $('#effort').scroller({
+        preset: 'time',
+        theme: 'jqm',
+        display: 'inline',
+        mode: 'clickpick',
+        timeFormat: 'HH:ii',
+        timeWheels: 'HH:ii'
+    });
+
 }
 
 function createLiTimesheetEntry(entry) {
