@@ -97,7 +97,8 @@
                 <h1 id="timesheets-task">Task</h1>
                 <a href="#popupAdd" data-rel="popup"
                     data-position-to="window" data-role="button"
-                    data-inline="true" data-icon="plus" data-iconpos="notext">Add</a>
+                    data-inline="true" data-icon="plus" data-iconpos="notext"
+                    onClick="setupAddTimesheetEntryPopup();">Add</a>
             </div>
 
             <div data-role="content">
@@ -111,9 +112,9 @@
                     <a href="#" data-rel="back" data-role="button"
                         data-icon="delete" data-iconpos="notext" data-theme="a"
                         class="ui-btn-right">Close</a>
-                    <div style="padding:10px 20px;">
-                        <input id="date"></input>
-                        <input id="effort"></input>
+                    <div style="padding: 5px;">
+                        <input id="date" style="display:none"></input>
+                        <input id="effort" style="display:none"></input>
                         <a href="#timesheets" data-role="button"
                             data-icon="plus" data-theme="b"
                             onClick="addTimesheetEntry();">Add</a>

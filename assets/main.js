@@ -301,29 +301,6 @@ function fillTimesheetsList() {
     }
 
     list.listview('destroy').listview();
-
-    setupAddTimesheetEntryPopup();
-}
-
-function setupAddTimesheetEntryPopup() {
-    $('#date').scroller({
-        preset: 'date',
-        theme: 'jqm',
-        display: 'inline',
-        mode: 'clickpick',
-        dateFormat: 'yyyy-mm-dd',
-        dateOrder: 'yyyy-mm-dd'
-    });
-
-    $('#effort').scroller({
-        preset: 'time',
-        theme: 'jqm',
-        display: 'inline',
-        mode: 'clickpick',
-        timeFormat: 'HH:ii',
-        timeWheels: 'HH:ii'
-    });
-
 }
 
 function createLiTimesheetEntry(entry) {
@@ -351,13 +328,7 @@ function addTimesheetEntry() {
     };
     timesheetsEntries.unshift(entry);
 
-    resetAddTimesheetPopup();
     refreshTimesheetsListAndShowSaveButton();
-}
-
-function resetAddTimesheetPopup() {
-    $('#date').val('');
-    $('#effort').val('');
 }
 
 function refreshTimesheetsListAndShowSaveButton() {
@@ -407,5 +378,29 @@ function saveTimesheetsEntries() {
                 'Error',
                 'Ok'
             );
+    });
+}
+
+function setupAddTimesheetEntryPopup() {
+    $('#date').scroller('destroy');
+    $('#date').scroller({
+        preset: 'date',
+        theme: 'jqm',
+        display: 'inline',
+        mode: 'scroller',
+        dateFormat: 'yyyy-mm-dd',
+        dateOrder: 'yyyy-mm-dd'
+    });
+    $('#date').scroller('setDate', new Date(), true);
+
+    $('#effort').scroller('destroy');
+    $('#effort').val('0:00');
+    $('#effort').scroller({
+        preset: 'time',
+        theme: 'jqm',
+        display: 'inline',
+        mode: 'scroller',
+        timeFormat: 'H:ii',
+        timeWheels: 'H:ii'
     });
 }
