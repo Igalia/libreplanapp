@@ -321,14 +321,29 @@ function removeTimesheetEntry(index) {
 }
 
 function addTimesheetEntry() {
-    var entry = {
-            date: $('#date').val(),
-            effort: $('#effort').val(),
-            task: selectedTask,
-    };
-    timesheetsEntries.unshift(entry);
+    var entry = findTimesheetEntryByDate($('#date').val());
+
+    if (entry == null) {
+        entry = {
+                date: $('#date').val(),
+                effort: $('#effort').val(),
+                task: selectedTask,
+        };
+        timesheetsEntries.unshift(entry);
+    } else {
+        entry.effort = $('#effort').val();
+    }
 
     refreshTimesheetsListAndShowSaveButton();
+}
+
+function findTimesheetEntryByDate(date) {
+    for (var i = 0; i < timesheetsEntries.length; i++) {
+        if (timesheetsEntries[i].date == date) {
+            return timesheetsEntries[i];
+        }
+    }
+    return null;
 }
 
 function refreshTimesheetsListAndShowSaveButton() {
