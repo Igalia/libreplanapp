@@ -308,7 +308,7 @@ function fillTimesheetsList() {
     var list = $('#timesheets-list');
     list.html('');
 
-    $('#saveTimesheetEntries').hide();
+    disableSaveTimesheetEntriesButton();
 
     if (timesheetsEntries.length == 0) {
         $('#timesheets-list-empty').show();
@@ -328,6 +328,14 @@ function fillTimesheetsList() {
     list.listview('destroy').listview();
 }
 
+function disableSaveTimesheetEntriesButton() {
+    $('#saveTimesheetEntries').addClass('ui-disabled');
+}
+
+function enableSaveTimesheetEntriesButton() {
+    $('#saveTimesheetEntries').removeClass('ui-disabled');
+}
+
 function createLiTimesheetEntry(entry) {
     var li = $('<li />');
 
@@ -342,7 +350,7 @@ function createLiTimesheetEntry(entry) {
 
 function removeTimesheetEntry(index) {
     timesheetsEntries[index].effort = "0";
-    refreshTimesheetsListAndShowSaveButton();
+    refreshTimesheetsListAndEnableSaveButton();
 }
 
 function addTimesheetEntry() {
@@ -359,7 +367,7 @@ function addTimesheetEntry() {
         entry.effort = $('#effort').val();
     }
 
-    refreshTimesheetsListAndShowSaveButton();
+    refreshTimesheetsListAndEnableSaveButton();
 }
 
 function findTimesheetEntryByDate(date) {
@@ -371,9 +379,9 @@ function findTimesheetEntryByDate(date) {
     return null;
 }
 
-function refreshTimesheetsListAndShowSaveButton() {
+function refreshTimesheetsListAndEnableSaveButton() {
     fillTimesheetsList();
-    $('#saveTimesheetEntries').show();
+    enableSaveTimesheetEntriesButton();
 }
 
 function generateTimesheetsEntriesXML() {
@@ -411,6 +419,8 @@ function saveTimesheetsEntries() {
         dataType: 'text',
     }).done(function(data) {
         $.mobile.loading('hide');
+
+        disableSaveTimesheetEntriesButton();
 
         navigator.notification.alert(
                 'Changes saved into LibrePlan server',
