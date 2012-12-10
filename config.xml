@@ -3,20 +3,18 @@
     xmlns:gap="http://phonegap.com/ns/1.0"
     id="org.libreplan.mobile"
     versionCode="1"
-    version="0.0.1">
+    version="0.1.0">
 
     <name>LibrePlan</name>
 
-    <description>
-    LibrePlan mobile app
-    </description>
+    <description>LibrePlan mobile app</description>
 
-    <author href="http://www.libreplan.com/" email="rego@igalia.com">
-        Manuel Rego Casasnovas
-    </author>
+    <author href="http://www.libreplan.com/" email="rego@igalia.com">Manuel Rego Casasnovas</author>
 
     <icon src="icon.png" gap:role="default" />
 
-    <preference name="permissions" value="none"/>
-    <preference name="phonegap-version" value="2.1.0" />
+    <gap:splash src="splash.png" />
+
+    <preference name="permissions" value="none" />
+
 </widget>
